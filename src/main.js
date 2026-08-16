@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import './style.css';
 
-const CONFIG = { lanes: [-2.5, 0, 2.5], speed: 8, levelSeconds: 30, rewindSeconds: 2.5, laneChangeSeconds: .18, jumpSeconds: .78, jumpHeight: 2.142, slideSeconds: .756, invulnerabilitySeconds: 1.2 };
+const CONFIG = { lanes: [-2.5, 0, 2.5], speed: 8.4, levelSeconds: 30, rewindSeconds: 2.5, laneChangeSeconds: .18, jumpSeconds: .78, jumpHeight: 2.142, slideSeconds: .756, invulnerabilitySeconds: 1.2 };
 const COLORS = { grass: 0x70b85b, path: 0xb8a57b, red: 0xe94560, navy: 0x19324b, cream: 0xfff3d6, blonde: 0xf5c86a, strawberry: 0xe94560, leaf: 0x3e8f4e, wood: 0x765135, white: 0xf6f1e8, sun: 0xffd36b, cloud: 0xf9fbf1 };
 
 const LEVEL = {
@@ -36,7 +36,7 @@ const ui = {
   startButton: document.getElementById('start-button'), resultButton: document.getElementById('result-button'), pauseButton: document.getElementById('pause-button'), resumeButton: document.getElementById('resume-button'), restartButton: document.getElementById('restart-button')
 };
 let mode = 'menu', elapsed = 0, lives = 3, score = 0, lane = 1, targetLane = 1, action = null, actionTime = 0, invulnerable = 0, lastTime = 0, collected = new Set();
-const obstacleMeshes = new Map(), berryMeshes = new Map();
+const obstacleMeshes = new Map(), berryMeshes = new Map(), treeMeshes = [];
 
 function mat(color, roughness = .8) { return new THREE.MeshStandardMaterial({ color, roughness }); }
 function box(name, size, color, position) { const mesh = new THREE.Mesh(new THREE.BoxGeometry(...size), mat(color)); mesh.name = name; mesh.position.set(...position); mesh.castShadow = true; mesh.receiveShadow = true; return mesh; }
@@ -58,7 +58,7 @@ function makePark() {
   const ground = box('grass', [100, .3, 280], COLORS.grass, [0, -.55, -105]); world.add(ground);
   const path = box('running path', [9, .08, 280], COLORS.path, [0, -.38, -105]); world.add(path);
   [-1, 1].forEach(side => { const curb = box('path edge', [.18, .18, 280], COLORS.cream, [side * 4.6, -.29, -105]); world.add(curb); });
-  for (let z = -8; z > -270; z -= 18) { [-1, 1].forEach(side => { const trunk = box('tree trunk', [.7, 4.2, .7], COLORS.wood, [side * 10, 1.55, z]); const crown = new THREE.Mesh(new THREE.DodecahedronGeometry(2.4, 0), mat(COLORS.leaf)); crown.position.set(side * 10, 5.3, z); crown.castShadow = true; world.add(trunk, crown); }); }
+  for (let z = -8; z > -270; z -= 18) { [-1, 1].forEach(side => { const tree = new THREE.Group(); const trunk = box('tree trunk', [.7, 4.2, .7], COLORS.wood, [0, 1.55, 0]); const crown = new THREE.Mesh(new THREE.DodecahedronGeometry(2.4, 0), mat(COLORS.leaf)); crown.position.y = 5.3; crown.castShadow = true; tree.add(trunk, crown); tree.position.set(side * 10, 0, z); world.add(tree); treeMeshes.push({ tree, baseZ: z }); }); }
   const finish = box('finish line', [9, .05, 1.2], COLORS.white, [0, -.3, -235]); world.add(finish);
   for (let i = -4; i < 5; i++) { const tile = box('finish tile', [1, .06, 1.2], i % 2 ? COLORS.navy : COLORS.white, [i, -.25, -235]); world.add(tile); }
 }
@@ -81,7 +81,7 @@ function makeObstacle(spec) {
   if (spec.type === 'bike') { g.add(box('bike body', [1.2, .2, .2], COLORS.red, [0, .75, 0]), box('bike rider', [.42, 2.1, .42], COLORS.navy, [0, 1.75, 0])); [-.45, .45].forEach(x => { const wheel = new THREE.Mesh(new THREE.TorusGeometry(.4, .07, 8, 16), mat(COLORS.navy)); wheel.rotation.y = Math.PI / 2; wheel.position.set(x, .45, 0); g.add(wheel); }); }
   g.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } }); world.add(g); obstacleMeshes.set(spec.id, g);
 }
-function makeBerry(spec) { const g = new THREE.Group(); g.position.x = laneX(spec.lane); const berry = new THREE.Mesh(new THREE.SphereGeometry(.25, 12, 8), mat(COLORS.strawberry)); berry.position.y = .8; const leaf = box('leaf', [.08, .18, .08], COLORS.leaf, [0, 1.05, 0]); leaf.rotation.z = -.4; g.add(berry, leaf); world.add(g); berryMeshes.set(spec.id, g); }
+function makeBerry(spec) { const g = new THREE.Group(); g.position.x = laneX(spec.lane); const berry = new THREE.Mesh(new THREE.SphereGeometry(.5, 12, 8), mat(COLORS.strawberry)); berry.position.y = .8; const leaf = box('leaf', [.16, .36, .16], COLORS.leaf, [0, 1.3, 0]); leaf.rotation.z = -.4; g.add(berry, leaf); world.add(g); berryMeshes.set(spec.id, g); }
 function laneX(value) { return CONFIG.lanes[value + 1]; }
 
 const girl = makeGirl(); makePark(); makeSkyDecor(); LEVEL.obstacles.forEach(makeObstacle); LEVEL.strawberries.forEach(makeBerry);
@@ -105,6 +105,7 @@ function isSafe(spec) {
 function handleCollision(spec) { if (invulnerable > 0 || isSafe(spec)) return; lives -= 1; invulnerable = CONFIG.invulnerabilitySeconds; elapsed = Math.max(0, elapsed - CONFIG.rewindSeconds); updateHUD(); if (lives <= 0) showResult(false); }
 function updateGame(dt) {
   elapsed += dt; invulnerable = Math.max(0, invulnerable - dt); if (targetLane !== lane) { const direction = Math.sign(targetLane - lane); const targetX = CONFIG.lanes[targetLane]; const laneSpeed = Math.abs(CONFIG.lanes[1] - CONFIG.lanes[0]) / CONFIG.laneChangeSeconds; girl.position.x += direction * laneSpeed * dt; if ((direction > 0 && girl.position.x >= targetX) || (direction < 0 && girl.position.x <= targetX)) { girl.position.x = targetX; lane = targetLane; } }
+  treeMeshes.forEach(({ tree, baseZ }) => { tree.position.z = ((baseZ + elapsed * CONFIG.speed + 260) % 280) - 260; });
   if (action) { actionTime += dt; const duration = action === 'jump' ? CONFIG.jumpSeconds : CONFIG.slideSeconds; const progress = actionTime / duration; if (action === 'jump') girl.position.y = Math.sin(Math.min(progress, 1) * Math.PI) * CONFIG.jumpHeight; else girl.position.y = .02; if (actionTime >= duration) { action = null; actionTime = 0; girl.position.y = 0; } }
   girl.scale.y = action === 'slide' ? .62 : 1; girl.rotation.z = Math.sin(elapsed * 18) * .025; if (!action) girl.position.y = Math.abs(Math.sin(elapsed * 16)) * .05;
   LEVEL.obstacles.forEach(spec => { const z = currentZ(spec.distance); obstacleMeshes.get(spec.id).position.z = z; if (Math.abs(z) < 1.0) handleCollision(spec); });
