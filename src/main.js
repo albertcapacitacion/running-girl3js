@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import './style.css';
 
-const CONFIG = { lanes: [-2.5, 0, 2.5], speed: 8.4, levelSeconds: 30, rewindSeconds: 2.5, laneChangeSeconds: .18, jumpSeconds: .78, jumpHeight: 2.142, slideSeconds: .756, invulnerabilitySeconds: 1.2 };
+const CONFIG = { lanes: [-2.5, 0, 2.5], speed: 8.4, levelSeconds: 30, rewindSeconds: 2.5, laneChangeSeconds: .18, jumpSeconds: .78, jumpHeight: 2.142, slideSeconds: .756, invulnerabilitySeconds: 1.2, swipeThreshold: 32 };
 const COLORS = { grass: 0x70b85b, path: 0xb8a57b, red: 0xe94560, navy: 0x19324b, cream: 0xfff3d6, blonde: 0xf5c86a, strawberry: 0xe94560, leaf: 0x3e8f4e, wood: 0x765135, white: 0xf6f1e8, sun: 0xffd36b, cloud: 0xf9fbf1 };
 
 const LEVEL = {
@@ -35,7 +35,7 @@ const ui = {
   timer: document.getElementById('timer'), resultEyebrow: document.getElementById('result-eyebrow'), resultTitle: document.getElementById('result-title'), resultCopy: document.getElementById('result-copy'),
   startButton: document.getElementById('start-button'), resultButton: document.getElementById('result-button'), pauseButton: document.getElementById('pause-button'), resumeButton: document.getElementById('resume-button'), restartButton: document.getElementById('restart-button')
 };
-let mode = 'menu', elapsed = 0, lives = 3, score = 0, lane = 1, targetLane = 1, action = null, actionTime = 0, invulnerable = 0, lastTime = 0, collected = new Set();
+let mode = 'menu', elapsed = 0, lives = 3, score = 0, lane = 1, targetLane = 1, action = null, actionTime = 0, invulnerable = 0, lastTime = 0, collected = new Set(), swipeStart = null;
 const obstacleMeshes = new Map(), berryMeshes = new Map(), treeMeshes = [];
 
 function mat(color, roughness = .8) { return new THREE.MeshStandardMaterial({ color, roughness }); }
@@ -115,6 +115,14 @@ function updateGame(dt) {
 function resize() { const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
 function animate() { requestAnimationFrame(animate); const now = clock.getElapsedTime(); const dt = Math.min(.05, now - lastTime || 0); lastTime = now; if (mode === 'playing') updateGame(dt); camera.lookAt(0, 1.7, -10); renderer.render(scene, camera); }
 document.addEventListener('keydown', event => { const map = { a: 'left', ArrowLeft: 'left', d: 'right', ArrowRight: 'right', w: 'up', ArrowUp: 'up', s: 'down', ArrowDown: 'down' }; if (map[event.key]) { event.preventDefault(); doAction(map[event.key]); } if (event.key === 'Escape' && mode === 'playing') setMode('paused'); });
+document.addEventListener('pointerdown', event => { if (event.isPrimary && event.pointerType !== 'mouse') swipeStart = { x: event.clientX, y: event.clientY }; });
+document.addEventListener('pointerup', event => {
+  if (!swipeStart || !event.isPrimary) return;
+  const dx = event.clientX - swipeStart.x; const dy = event.clientY - swipeStart.y; swipeStart = null;
+  if (Math.max(Math.abs(dx), Math.abs(dy)) < CONFIG.swipeThreshold) return;
+  doAction(Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 'left' : 'right') : (dy < 0 ? 'up' : 'down'));
+});
+document.addEventListener('pointercancel', () => { swipeStart = null; });
 document.querySelectorAll('[data-action]').forEach(button => button.addEventListener('pointerdown', event => { event.preventDefault(); doAction(button.dataset.action); }));
 ui.startButton.addEventListener('click', startGame); ui.resultButton.addEventListener('click', () => setMode('menu')); ui.pauseButton.addEventListener('click', () => setMode('paused')); ui.resumeButton.addEventListener('click', () => setMode('playing')); ui.restartButton.addEventListener('click', startGame); addEventListener('resize', resize);
 if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {})); resize(); setMode('menu'); animate();
