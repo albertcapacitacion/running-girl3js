@@ -3,7 +3,7 @@
   "short_name": "Running Girl",
   "start_url": "/",
   "display": "fullscreen",
-  "orientation": "landscape",
+  "orientation": "portrait",
   "background_color": "#0d1c2d",
   "theme_color": "#0d1c2d",
   "icons": []
