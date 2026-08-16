@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#0d1c2d" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <title>Running Girl Prototype</title>
+  </head>
+  <body>
+    <main id="app">
+      <canvas id="game-canvas"></canvas>
+      <section id="menu-screen" class="screen panel">
+        <p class="eyebrow">REACTION RUNNER</p>
+        <h1>Running Girl</h1>
+        <p>Reach the finish, collect strawberries, and keep your three hearts.</p>
+        <button id="start-button" class="primary-button">Start level</button>
+        <p class="hint">Landscape recommended · WASD or the on-screen pad</p>
+      </section>
+      <section id="result-screen" class="screen panel hidden">
+        <p id="result-eyebrow" class="eyebrow">LEVEL COMPLETE</p>
+        <h2 id="result-title">You made it!</h2>
+        <p id="result-copy"></p>
+        <button id="result-button" class="primary-button">Back to menu</button>
+      </section>
+      <div id="hud" class="hud hidden">
+        <div class="hud-card"><span id="hearts">♥ ♥ ♥</span></div>
+        <div class="hud-card score">Strawberries <strong id="score">0</strong></div>
+        <div class="hud-card timer"><strong id="timer">30</strong>s</div>
+        <button id="pause-button" class="icon-button" aria-label="Pause">Ⅱ</button>
+      </div>
+      <div id="pause-screen" class="screen panel hidden">
+        <p class="eyebrow">PAUSED</p>
+        <h2>Take a breath</h2>
+        <button id="resume-button" class="primary-button">Resume</button>
+        <button id="restart-button" class="secondary-button">Restart level</button>
+      </div>
+      <div id="controls" class="controls hidden" aria-label="Game controls">
+        <button data-action="up" class="control-button up" aria-label="Jump">▲</button>
+        <button data-action="left" class="control-button left" aria-label="Move left">◀</button>
+        <button data-action="down" class="control-button down" aria-label="Slide">▼</button>
+        <button data-action="right" class="control-button right" aria-label="Move right">▶</button>
+      </div>
+      <div id="portrait-warning" class="portrait-warning">Rotate your device to landscape</div>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

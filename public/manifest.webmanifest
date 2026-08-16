@@ -1,0 +1,10 @@
+{
+  "name": "Running Girl Prototype",
+  "short_name": "Running Girl",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#0d1c2d",
+  "theme_color": "#0d1c2d",
+  "icons": []
+}
