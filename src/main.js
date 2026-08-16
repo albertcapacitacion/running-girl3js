@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import './style.css';
 
 const CONFIG = { lanes: [-2.5, 0, 2.5], speed: 8, levelSeconds: 30, rewindSeconds: 2.5, laneChangeSeconds: .18, jumpSeconds: .78, jumpHeight: 2.142, slideSeconds: .756, invulnerabilitySeconds: 1.2 };
-const COLORS = { grass: 0x70b85b, path: 0xb8a57b, red: 0xe94560, navy: 0x19324b, cream: 0xfff3d6, blonde: 0xf5c86a, strawberry: 0xe94560, leaf: 0x3e8f4e, wood: 0x765135, white: 0xf6f1e8 };
+const COLORS = { grass: 0x70b85b, path: 0xb8a57b, red: 0xe94560, navy: 0x19324b, cream: 0xfff3d6, blonde: 0xf5c86a, strawberry: 0xe94560, leaf: 0x3e8f4e, wood: 0x765135, white: 0xf6f1e8, sun: 0xffd36b, cloud: 0xf9fbf1 };
 
 const LEVEL = {
   obstacles: [
@@ -40,6 +40,20 @@ const obstacleMeshes = new Map(), berryMeshes = new Map();
 
 function mat(color, roughness = .8) { return new THREE.MeshStandardMaterial({ color, roughness }); }
 function box(name, size, color, position) { const mesh = new THREE.Mesh(new THREE.BoxGeometry(...size), mat(color)); mesh.name = name; mesh.position.set(...position); mesh.castShadow = true; mesh.receiveShadow = true; return mesh; }
+function makeSkyDecor() {
+  const sun = new THREE.Mesh(new THREE.SphereGeometry(3.2, 12, 8), new THREE.MeshBasicMaterial({ color: COLORS.sun }));
+  sun.name = 'sun'; sun.position.set(-18, 14, -62); scene.add(sun);
+
+  const cloudPositions = [[-9, 10, -28], [10, 12, -48], [2, 8.8, -78]];
+  cloudPositions.forEach((position, index) => {
+    const cloud = new THREE.Group(); cloud.name = `cloud-${index + 1}`; cloud.position.set(...position);
+    [[-1.35, 0, 0], [0, .45, 0], [1.35, 0, 0], [.25, .1, .25]].forEach(([x, y, z], puffIndex) => {
+      const puff = new THREE.Mesh(new THREE.SphereGeometry(puffIndex === 1 ? 1.25 : 1, 12, 8), new THREE.MeshBasicMaterial({ color: COLORS.cloud }));
+      puff.position.set(x, y, z); cloud.add(puff);
+    });
+    scene.add(cloud);
+  });
+}
 function makePark() {
   const ground = box('grass', [100, .3, 280], COLORS.grass, [0, -.55, -105]); world.add(ground);
   const path = box('running path', [9, .08, 280], COLORS.path, [0, -.38, -105]); world.add(path);
@@ -63,14 +77,14 @@ function makeGirl() {
 function makeObstacle(spec) {
   const g = new THREE.Group(); g.position.x = laneX(spec.lane); g.name = spec.id;
   if (spec.type === 'bench') { g.add(box('bench seat', [2.2, .28, .65], COLORS.wood, [0, .5, 0])); [-.7, .7].forEach(x => g.add(box('bench leg', [.18, .55, .5], COLORS.wood, [x, .15, 0]))); }
-  if (spec.type === 'sign') { [-.72, .72].forEach(x => g.add(box('sign leg', [.18, 3.0, .18], COLORS.wood, [x, 1.5, 0]))); g.add(box('sign board', [2.1, .85, .16], COLORS.red, [0, 3.4, 0])); }
+  if (spec.type === 'sign') { [-.74, .74].forEach(x => g.add(box('sign leg', [.18, 3.0, .18], COLORS.wood, [x, 1.5, 0]))); g.add(box('sign board', [2.1, .85, .16], COLORS.red, [0, 3.4, 0])); }
   if (spec.type === 'bike') { g.add(box('bike body', [1.2, .2, .2], COLORS.red, [0, .75, 0]), box('bike rider', [.42, 2.1, .42], COLORS.navy, [0, 1.75, 0])); [-.45, .45].forEach(x => { const wheel = new THREE.Mesh(new THREE.TorusGeometry(.4, .07, 8, 16), mat(COLORS.navy)); wheel.rotation.y = Math.PI / 2; wheel.position.set(x, .45, 0); g.add(wheel); }); }
   g.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } }); world.add(g); obstacleMeshes.set(spec.id, g);
 }
 function makeBerry(spec) { const g = new THREE.Group(); g.position.x = laneX(spec.lane); const berry = new THREE.Mesh(new THREE.SphereGeometry(.25, 12, 8), mat(COLORS.strawberry)); berry.position.y = .8; const leaf = box('leaf', [.08, .18, .08], COLORS.leaf, [0, 1.05, 0]); leaf.rotation.z = -.4; g.add(berry, leaf); world.add(g); berryMeshes.set(spec.id, g); }
 function laneX(value) { return CONFIG.lanes[value + 1]; }
 
-const girl = makeGirl(); makePark(); LEVEL.obstacles.forEach(makeObstacle); LEVEL.strawberries.forEach(makeBerry);
+const girl = makeGirl(); makePark(); makeSkyDecor(); LEVEL.obstacles.forEach(makeObstacle); LEVEL.strawberries.forEach(makeBerry);
 function resetLevel() { elapsed = 0; lives = 3; score = 0; lane = 1; targetLane = 1; action = null; actionTime = 0; invulnerable = 0; collected.clear(); girl.position.x = 0; updateHUD(); }
 function setMode(next) { mode = next; ui.menuScreen.classList.toggle('hidden', next !== 'menu'); ui.resultScreen.classList.toggle('hidden', !['success','gameover'].includes(next)); ui.hud.classList.toggle('hidden', next !== 'playing'); ui.controls.classList.toggle('hidden', next !== 'playing'); ui.pauseScreen.classList.toggle('hidden', next !== 'paused'); }
 function startGame() { resetLevel(); setMode('playing'); }
@@ -79,7 +93,7 @@ function updateHUD() { ui.hearts.textContent = `${'♥ '.repeat(lives)}${'♡ '.
 function doAction(input) { if (mode !== 'playing') return; if (input === 'left' || input === 'right') { if (action) return; const next = targetLane + (input === 'left' ? -1 : 1); if (next >= 0 && next <= 2) targetLane = next; return; } if (action) return; if (input === 'up') { action = 'jump'; actionTime = 0; } if (input === 'down') { action = 'slide'; actionTime = 0; } }
 function currentZ(distance) { return -(distance - elapsed * CONFIG.speed); }
 function obstacleHalfWidth(spec) { return spec.type === 'bench' || spec.type === 'sign' ? 1.05 : .6; }
-function obstacleClearance(spec) { return spec.type === 'bench' ? .3012 : Infinity; }
+function obstacleClearance(spec) { return spec.type === 'bench' ? .292 : Infinity; }
 function isSafe(spec) {
   const playerHalfWidth = .525;
   const overlapsHorizontally = Math.abs(girl.position.x - laneX(spec.lane)) < playerHalfWidth + obstacleHalfWidth(spec);
