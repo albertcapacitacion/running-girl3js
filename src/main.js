@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import './style.css';
 
-const CONFIG = { lanes: [-2.5, 0, 2.5], speed: 8, levelSeconds: 30, rewindSeconds: 2.5, laneChangeSeconds: .18, jumpSeconds: .78, jumpHeight: 2.142, slideSeconds: .72, invulnerabilitySeconds: 1.2 };
+const CONFIG = { lanes: [-2.5, 0, 2.5], speed: 8, levelSeconds: 30, rewindSeconds: 2.5, laneChangeSeconds: .18, jumpSeconds: .78, jumpHeight: 2.142, slideSeconds: .756, invulnerabilitySeconds: 1.2 };
 const COLORS = { grass: 0x70b85b, path: 0xb8a57b, red: 0xe94560, navy: 0x19324b, cream: 0xfff3d6, blonde: 0xf5c86a, strawberry: 0xe94560, leaf: 0x3e8f4e, wood: 0x765135, white: 0xf6f1e8 };
 
 const LEVEL = {
@@ -44,7 +44,7 @@ function makePark() {
   const ground = box('grass', [100, .3, 280], COLORS.grass, [0, -.55, -105]); world.add(ground);
   const path = box('running path', [9, .08, 280], COLORS.path, [0, -.38, -105]); world.add(path);
   [-1, 1].forEach(side => { const curb = box('path edge', [.18, .18, 280], COLORS.cream, [side * 4.6, -.29, -105]); world.add(curb); });
-  for (let z = -8; z > -270; z -= 18) { [-1, 1].forEach(side => { const trunk = box('tree trunk', [.7, 2.6, .7], COLORS.wood, [side * 10, 1, z]); const crown = new THREE.Mesh(new THREE.DodecahedronGeometry(2.4, 0), mat(COLORS.leaf)); crown.position.set(side * 10, 3.5, z); crown.castShadow = true; world.add(trunk, crown); }); }
+  for (let z = -8; z > -270; z -= 18) { [-1, 1].forEach(side => { const trunk = box('tree trunk', [.7, 4.2, .7], COLORS.wood, [side * 10, 1.55, z]); const crown = new THREE.Mesh(new THREE.DodecahedronGeometry(2.4, 0), mat(COLORS.leaf)); crown.position.set(side * 10, 5.3, z); crown.castShadow = true; world.add(trunk, crown); }); }
   const finish = box('finish line', [9, .05, 1.2], COLORS.white, [0, -.3, -235]); world.add(finish);
   for (let i = -4; i < 5; i++) { const tile = box('finish tile', [1, .06, 1.2], i % 2 ? COLORS.navy : COLORS.white, [i, -.25, -235]); world.add(tile); }
 }
@@ -79,7 +79,7 @@ function updateHUD() { ui.hearts.textContent = `${'♥ '.repeat(lives)}${'♡ '.
 function doAction(input) { if (mode !== 'playing') return; if (input === 'left' || input === 'right') { if (action) return; const next = targetLane + (input === 'left' ? -1 : 1); if (next >= 0 && next <= 2) targetLane = next; return; } if (action) return; if (input === 'up') { action = 'jump'; actionTime = 0; } if (input === 'down') { action = 'slide'; actionTime = 0; } }
 function currentZ(distance) { return -(distance - elapsed * CONFIG.speed); }
 function obstacleHalfWidth(spec) { return spec.type === 'bench' || spec.type === 'sign' ? 1.05 : .6; }
-function obstacleClearance(spec) { return spec.type === 'bench' ? .33 : Infinity; }
+function obstacleClearance(spec) { return spec.type === 'bench' ? .3012 : Infinity; }
 function isSafe(spec) {
   const playerHalfWidth = .525;
   const overlapsHorizontally = Math.abs(girl.position.x - laneX(spec.lane)) < playerHalfWidth + obstacleHalfWidth(spec);
