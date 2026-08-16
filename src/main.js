@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import './style.css';
 
-const CONFIG = { lanes: [-2.5, 0, 2.5], speed: 8, levelSeconds: 30, rewindSeconds: 2.5, laneChangeSeconds: .18, jumpSeconds: .78, slideSeconds: .72, invulnerabilitySeconds: 1.2 };
+const CONFIG = { lanes: [-2.5, 0, 2.5], speed: 8, levelSeconds: 30, rewindSeconds: 2.5, laneChangeSeconds: .18, jumpSeconds: .78, jumpHeight: 2.142, slideSeconds: .72, invulnerabilitySeconds: 1.2 };
 const COLORS = { grass: 0x70b85b, path: 0xb8a57b, red: 0xe94560, navy: 0x19324b, cream: 0xfff3d6, blonde: 0xf5c86a, strawberry: 0xe94560, leaf: 0x3e8f4e, wood: 0x765135, white: 0xf6f1e8 };
 
 const LEVEL = {
@@ -63,8 +63,8 @@ function makeGirl() {
 function makeObstacle(spec) {
   const g = new THREE.Group(); g.position.x = laneX(spec.lane); g.name = spec.id;
   if (spec.type === 'bench') { g.add(box('bench seat', [2.2, .28, .65], COLORS.wood, [0, .5, 0])); [-.7, .7].forEach(x => g.add(box('bench leg', [.18, .55, .5], COLORS.wood, [x, .15, 0]))); }
-  if (spec.type === 'sign') { g.add(box('sign post', [.18, 2.3, .18], COLORS.wood, [0, .7, 0]), box('sign board', [2.1, .85, .16], COLORS.red, [0, 1.8, 0])); }
-  if (spec.type === 'bike') { g.add(box('bike body', [1.2, .2, .2], COLORS.red, [0, .75, 0]), box('bike rider', [.42, .8, .42], COLORS.navy, [0, 1.35, 0])); [-.45, .45].forEach(x => { const wheel = new THREE.Mesh(new THREE.TorusGeometry(.4, .07, 8, 16), mat(COLORS.navy)); wheel.rotation.y = Math.PI / 2; wheel.position.set(x, .45, 0); g.add(wheel); }); }
+  if (spec.type === 'sign') { [-.72, .72].forEach(x => g.add(box('sign leg', [.18, 3.0, .18], COLORS.wood, [x, 1.5, 0]))); g.add(box('sign board', [2.1, .85, .16], COLORS.red, [0, 3.4, 0])); }
+  if (spec.type === 'bike') { g.add(box('bike body', [1.2, .2, .2], COLORS.red, [0, .75, 0]), box('bike rider', [.42, 2.1, .42], COLORS.navy, [0, 1.75, 0])); [-.45, .45].forEach(x => { const wheel = new THREE.Mesh(new THREE.TorusGeometry(.4, .07, 8, 16), mat(COLORS.navy)); wheel.rotation.y = Math.PI / 2; wheel.position.set(x, .45, 0); g.add(wheel); }); }
   g.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } }); world.add(g); obstacleMeshes.set(spec.id, g);
 }
 function makeBerry(spec) { const g = new THREE.Group(); g.position.x = laneX(spec.lane); const berry = new THREE.Mesh(new THREE.SphereGeometry(.25, 12, 8), mat(COLORS.strawberry)); berry.position.y = .8; const leaf = box('leaf', [.08, .18, .08], COLORS.leaf, [0, 1.05, 0]); leaf.rotation.z = -.4; g.add(berry, leaf); world.add(g); berryMeshes.set(spec.id, g); }
@@ -78,11 +78,20 @@ function showResult(success) { setMode(success ? 'success' : 'gameover'); ui.res
 function updateHUD() { ui.hearts.textContent = `${'♥ '.repeat(lives)}${'♡ '.repeat(3 - lives)}`.trim(); ui.score.textContent = score; ui.timer.textContent = Math.max(0, Math.ceil(CONFIG.levelSeconds - elapsed)); }
 function doAction(input) { if (mode !== 'playing') return; if (input === 'left' || input === 'right') { if (action) return; const next = targetLane + (input === 'left' ? -1 : 1); if (next >= 0 && next <= 2) targetLane = next; return; } if (action) return; if (input === 'up') { action = 'jump'; actionTime = 0; } if (input === 'down') { action = 'slide'; actionTime = 0; } }
 function currentZ(distance) { return -(distance - elapsed * CONFIG.speed); }
-function isSafe(spec) { if (targetLane !== spec.lane) return true; if (spec.type === 'bench') return action === 'jump' && actionTime < CONFIG.jumpSeconds * .75; if (spec.type === 'sign') return action === 'slide'; return false; }
+function obstacleHalfWidth(spec) { return spec.type === 'bench' || spec.type === 'sign' ? 1.05 : .6; }
+function obstacleClearance(spec) { return spec.type === 'bench' ? .33 : Infinity; }
+function isSafe(spec) {
+  const playerHalfWidth = .525;
+  const overlapsHorizontally = Math.abs(girl.position.x - laneX(spec.lane)) < playerHalfWidth + obstacleHalfWidth(spec);
+  if (!overlapsHorizontally) return true;
+  if (spec.type === 'bench') return action === 'jump' && girl.position.y > obstacleClearance(spec);
+  if (spec.type === 'sign') return action === 'slide';
+  return false;
+}
 function handleCollision(spec) { if (invulnerable > 0 || isSafe(spec)) return; lives -= 1; invulnerable = CONFIG.invulnerabilitySeconds; elapsed = Math.max(0, elapsed - CONFIG.rewindSeconds); updateHUD(); if (lives <= 0) showResult(false); }
 function updateGame(dt) {
   elapsed += dt; invulnerable = Math.max(0, invulnerable - dt); if (targetLane !== lane) { const direction = Math.sign(targetLane - lane); const targetX = CONFIG.lanes[targetLane]; const laneSpeed = Math.abs(CONFIG.lanes[1] - CONFIG.lanes[0]) / CONFIG.laneChangeSeconds; girl.position.x += direction * laneSpeed * dt; if ((direction > 0 && girl.position.x >= targetX) || (direction < 0 && girl.position.x <= targetX)) { girl.position.x = targetX; lane = targetLane; } }
-  if (action) { actionTime += dt; const duration = action === 'jump' ? CONFIG.jumpSeconds : CONFIG.slideSeconds; const progress = actionTime / duration; if (action === 'jump') girl.position.y = Math.sin(Math.min(progress, 1) * Math.PI) * 2.0; else girl.position.y = .02; if (actionTime >= duration) { action = null; actionTime = 0; girl.position.y = 0; } }
+  if (action) { actionTime += dt; const duration = action === 'jump' ? CONFIG.jumpSeconds : CONFIG.slideSeconds; const progress = actionTime / duration; if (action === 'jump') girl.position.y = Math.sin(Math.min(progress, 1) * Math.PI) * CONFIG.jumpHeight; else girl.position.y = .02; if (actionTime >= duration) { action = null; actionTime = 0; girl.position.y = 0; } }
   girl.scale.y = action === 'slide' ? .62 : 1; girl.rotation.z = Math.sin(elapsed * 18) * .025; if (!action) girl.position.y = Math.abs(Math.sin(elapsed * 16)) * .05;
   LEVEL.obstacles.forEach(spec => { const z = currentZ(spec.distance); obstacleMeshes.get(spec.id).position.z = z; if (Math.abs(z) < 1.0) handleCollision(spec); });
   LEVEL.strawberries.forEach(spec => { const berry = berryMeshes.get(spec.id); berry.position.z = currentZ(spec.distance); berry.visible = !collected.has(spec.id); if (!collected.has(spec.id) && Math.abs(berry.position.z) < .9 && Math.abs(girl.position.x - laneX(spec.lane)) < .8) { collected.add(spec.id); score += 1; updateHUD(); } });
