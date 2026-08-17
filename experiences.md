@@ -66,3 +66,8 @@
 - Character 1’s supplied portrait had an opaque dark backdrop and more canvas padding than Character 2, making it appear smaller in the selector.
 - Applied a selector-only blend treatment and independent scale so the backdrop visually disappears against the panel while the figure occupies comparable space; gameplay assets remain unchanged.
 - Replaced the blend-only workaround with a dedicated transparent cutout asset after desktop and mobile review showed the original red studio backdrop was still visible.
+
+## 2026-08-17 — Level thumbnail differentiation
+
+- The first thumbnail pass varied mostly by palette, which made the five routes look too similar at a glance.
+- Added distinct lightweight visual cues tied to each environment: trees and sun, moon and stars, snow and snowman, rain and buildings, and festival poles with bunting.
