@@ -10,14 +10,22 @@
   <body>
     <main id="app">
       <canvas id="game-canvas"></canvas>
-      <section id="menu-screen" class="screen panel">
-        <p class="eyebrow">REACTION RUNNER</p>
-        <h1>Running Girl</h1>
-        <p>Choose a route, collect treats, and keep your three hearts.</p>
+      <section id="title-screen" class="screen title-screen">
+        <img class="game-logo" src="/running-girl-logo.png" alt="Running Girl" />
+        <button id="press-start-button" class="press-start">PRESS START</button>
+        <p class="hint">Tap, Enter, or Space</p>
+      </section>
+      <section id="character-screen" class="screen panel hidden">
+        <p class="eyebrow">CHOOSE YOUR RUNNER</p>
+        <h1>Character Select</h1>
         <div id="character-map" class="character-map" aria-label="Choose a character"></div>
+        <button id="character-next-button" class="primary-button">Continue</button>
+      </section>
+      <section id="menu-screen" class="screen panel hidden">
+        <p class="eyebrow">CHOOSE YOUR ROUTE</p>
+        <h1>Level Select</h1>
         <div id="level-map" class="level-map" aria-label="Choose a level"></div>
         <button id="start-button" class="primary-button">Start selected level</button>
-        <p class="hint">Portrait mode · WASD or the on-screen pad</p>
       </section>
       <section id="result-screen" class="screen panel hidden">
         <p id="result-eyebrow" class="eyebrow">LEVEL COMPLETE</p>

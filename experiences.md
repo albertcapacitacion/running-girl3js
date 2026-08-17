@@ -54,3 +54,15 @@
 
 - Kept character selection separate from level data: a small appearance registry controls skin, hair, and shared clothing while the existing movement and collision model remains unchanged.
 - Used lightweight procedural previews and procedural hair geometry, avoiding new assets or dependencies so the game remains Sites-compatible and mobile-friendly.
+
+## 2026-08-17 — Arcade title and progression flow
+
+- Split the entry flow into title, character select, and level select screens so each decision has a single clear action.
+- Added the supplied neon logo as a local asset and used the existing theme data to create lightweight level thumbnails without introducing external image dependencies.
+- Kept unselected levels visibly dimmed while preserving the selected thumbnail at full brightness for quick recognition on small screens.
+
+## 2026-08-17 — Character 1 portrait balance
+
+- Character 1’s supplied portrait had an opaque dark backdrop and more canvas padding than Character 2, making it appear smaller in the selector.
+- Applied a selector-only blend treatment and independent scale so the backdrop visually disappears against the panel while the figure occupies comparable space; gameplay assets remain unchanged.
+- Replaced the blend-only workaround with a dedicated transparent cutout asset after desktop and mobile review showed the original red studio backdrop was still visible.
