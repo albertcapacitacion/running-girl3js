@@ -3,7 +3,7 @@
 html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; }
 body { touch-action: none; }
 #game-canvas { display: block; width: 100%; height: 100%; }
-.screen { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; padding: 2rem; }
+.screen { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; padding: 2rem; overflow-y: auto; touch-action: auto; }
 .title-screen { background: radial-gradient(circle at 50% 38%, rgba(27, 9, 62, .18), rgba(3, 4, 18, .84) 76%), linear-gradient(180deg, rgba(4, 8, 27, .38), rgba(10, 4, 25, .84)); }
 .game-logo { display: block; width: min(86vw, 64rem); max-height: 62vh; object-fit: contain; margin: 0 auto 1rem; filter: drop-shadow(0 0 1.3rem rgba(255, 27, 187, .42)); }
 .press-start { color: #fff; background: transparent; font-size: clamp(1.05rem, 2.6vw, 1.65rem); font-weight: 950; letter-spacing: .22em; text-shadow: 0 0 .7rem #ff39cf, 0 .18rem 0 #7023a8; animation: press-pulse 1.05s steps(2, jump-none) infinite; }
@@ -84,10 +84,16 @@ button { border: 0; color: #fff; font: inherit; cursor: pointer; -webkit-tap-hig
 .control-button:active { background: rgba(233,69,96,.8); }
 .up { left: 2.8rem; top: 0; } .left { left: 0; top: 2.8rem; } .down { left: 2.8rem; top: 2.8rem; } .right { left: 5.6rem; top: 2.8rem; }
 @media (orientation: portrait) and (max-width: 800px) {
+  .screen { place-content: start center; padding: 1.25rem .75rem 2rem; }
+  .title-screen { place-content: center; }
+  h1 { font-size: clamp(2.25rem, 10vw, 4rem); }
   .character-map { margin-top: .7rem; }
   .character-node { width: 43vw; height: 45vh; min-height: 14rem; }
   .character-preview { height: calc(100% - 1.8rem); }
-  .level-map { grid-template-columns: repeat(2, minmax(8rem, 1fr)); }
+  .level-map { grid-template-columns: repeat(2, minmax(0, 1fr)); width: min(30rem, 94vw); gap: .45rem; margin-top: .7rem; }
+  .level-node { min-height: 7rem; padding: .4rem .4rem .55rem; }
+  .level-preview { height: 4.25rem; margin-bottom: .35rem; }
+  .level-node strong { font-size: .68rem; }
   .hud { flex-wrap: wrap; gap: .65rem; }
   .hud-card { font-size: clamp(2.25rem, 7.5vw, 3rem); padding: 1.65rem 2.4rem; }
   .score { margin-left: 0; }
