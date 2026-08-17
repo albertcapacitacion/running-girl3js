@@ -95,7 +95,7 @@ button { border: 0; color: #fff; font: inherit; cursor: pointer; -webkit-tap-hig
   .level-preview { height: 4.25rem; margin-bottom: .35rem; }
   .level-node strong { font-size: .68rem; }
   .hud { flex-wrap: wrap; gap: .65rem; }
-  .hud-card { font-size: clamp(2.25rem, 7.5vw, 3rem); padding: 1.65rem 2.4rem; }
+  .hud-card { font-size: clamp(.75rem, 2vw, 1rem); padding: .55rem .8rem; }
   .score { margin-left: 0; }
-  .icon-button { width: 7.5rem; height: 7.5rem; }
+  .icon-button { width: 2.5rem; height: 2.5rem; }
 }
