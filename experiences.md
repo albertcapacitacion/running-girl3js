@@ -44,5 +44,13 @@
 - Kept the speed increase multiplicative at 10% per level (`1.1 ^ levelIndex`) so the progression remains explicit and easy to tune.
 - Added explicit geometry/material disposal when rebuilding a level so repeated map selection and replay do not accumulate GPU resources.
 - Versioned the service-worker cache after browser QA exposed stale UI being served from the previous cache.
-- Review fixes: completion now follows the visible finish line at every speed, and snow caps are placed on tree crowns. Service-worker activation also removes superseded caches.
-- Moved the finish checker and finish line into one group so the visible line, completion timing, and level speed stay synchronized.
+
+## 2026-08-17 — Detailed character selection pass
+
+- Added two front-facing character portraits to the menu while keeping gameplay characters as Three.js geometry.
+- Increased character detail independently from the environment with layered hair volumes, facial features, sweater/collar/tie, skirt pleats and crest, tall socks, and shoes.
+
+## 2026-08-17 — Character selection pass
+
+- Kept character selection separate from level data: a small appearance registry controls skin, hair, and shared clothing while the existing movement and collision model remains unchanged.
+- Used lightweight procedural previews and procedural hair geometry, avoiding new assets or dependencies so the game remains Sites-compatible and mobile-friendly.
