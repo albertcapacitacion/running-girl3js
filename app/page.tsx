@@ -10,22 +10,40 @@ export default function Home() {
   return (
     <main id="app">
       <canvas id="game-canvas" />
-      <section id="menu-screen" className="screen panel">
-        <p className="eyebrow">REACTION RUNNER</p>
-        <h1>Running Girl</h1>
-        <p>Reach the finish, collect strawberries, and keep your three hearts.</p>
-        <button id="start-button" className="primary-button">Start level</button>
-        <p className="hint">Landscape recommended · WASD or the on-screen pad</p>
+      <section id="title-screen" className="screen title-screen">
+        <img className="game-logo" src="/running-girl-logo.png" alt="Running Girl" />
+        <button id="press-start-button" className="press-start">PRESS START</button>
+        <p className="hint">Tap, Enter, or Space</p>
+      </section>
+      <section id="character-screen" className="screen panel hidden">
+        <p className="eyebrow">CHOOSE YOUR RUNNER</p>
+        <h1>Character Select</h1>
+        <div id="character-map" className="character-map" aria-label="Choose a character" />
+        <button id="character-next-button" className="primary-button">Continue</button>
+      </section>
+      <section id="menu-screen" className="screen panel hidden">
+        <p className="eyebrow">CHOOSE YOUR ROUTE</p>
+        <h1>Level Select</h1>
+        <div id="level-map" className="level-map" aria-label="Choose a level" />
+        <button id="start-button" className="primary-button">Start selected level</button>
       </section>
       <section id="result-screen" className="screen panel hidden">
         <p id="result-eyebrow" className="eyebrow">LEVEL COMPLETE</p>
         <h2 id="result-title">You made it!</h2>
         <p id="result-copy" />
+        <button id="next-button" className="primary-button hidden">Next level</button>
         <button id="result-button" className="primary-button">Back to menu</button>
       </section>
       <div id="hud" className="hud hidden">
         <div className="hud-card"><span id="hearts">♥ ♥ ♥</span></div>
-        <div className="hud-card score">Strawberries <strong id="score">0</strong></div>
+        <div className="hud-card score" aria-label="Collectibles collected">
+          <svg className="strawberry-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path className="strawberry-leaves" d="M12 7.1C10.2 4.5 7.6 3.8 6 4.5c1.1 1.1 2.2 1.7 3.5 1.9C7.1 6.1 5.2 7 4.3 8.3c1.5.4 2.8.3 4-.2C6.5 10.4 6.2 13.4 7.1 16c.9 2.5 2.7 4.7 4.9 5.7 2.2-1 4-3.2 4.9-5.7.9-2.6.6-5.6-1.2-7.9 1.2.5 2.5.6 4 .2-.9-1.3-2.8-2.2-5.2-1.9 1.3-.2 2.4-.8 3.5-1.9-1.6-.7-4.2 0-6 2.6Z" />
+            <path className="strawberry-fruit" d="M12 7.1c-3.8 0-6.4 1.9-6.4 5.2 0 4.3 3.4 9.1 6.4 9.1s6.4-4.8 6.4-9.1c0-3.3-2.6-5.2-6.4-5.2Z" />
+            <circle cx="9.2" cy="11.8" r=".65" /><circle cx="13" cy="10.5" r=".65" /><circle cx="15.4" cy="13.2" r=".65" /><circle cx="10.5" cy="15.2" r=".65" /><circle cx="13.6" cy="17" r=".65" />
+          </svg>
+          <span id="collectible-label">Treats</span> <strong id="score">0</strong>
+        </div>
         <div className="hud-card timer"><strong id="timer">30</strong>s</div>
         <button id="pause-button" className="icon-button" aria-label="Pause">Ⅱ</button>
       </div>
@@ -41,7 +59,6 @@ export default function Home() {
         <button data-action="down" className="control-button down" aria-label="Slide">▼</button>
         <button data-action="right" className="control-button right" aria-label="Move right">▶</button>
       </div>
-      <div id="portrait-warning" className="portrait-warning">Rotate your device to landscape</div>
     </main>
   );
 }
