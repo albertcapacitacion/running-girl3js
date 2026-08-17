@@ -34,3 +34,15 @@
 ## 2026-08-16 — Further bench jump tolerance
 
 - Reduced the bench jump clearance threshold by another 3% to make the obstacle slightly more forgiving.
+
+## 2026-08-17 — Five-level theme and map pass
+
+- Replaced the single level entry point with five compact plain level records so new content can be added by editing data rather than gameplay flow.
+- Added an always-unlocked level map, replay support, and next-level progression while keeping the existing movement and collision rules.
+- Added night, snow, rain, and festival environments with lightweight procedural weather and decoration; no external assets or runtime services were introduced.
+- Added cakes, ice creams, cupcakes, mixed treats, and single-lane cars/trucks using the existing collectible and obstacle interaction categories.
+- Kept the speed increase multiplicative at 10% per level (`1.1 ^ levelIndex`) so the progression remains explicit and easy to tune.
+- Added explicit geometry/material disposal when rebuilding a level so repeated map selection and replay do not accumulate GPU resources.
+- Versioned the service-worker cache after browser QA exposed stale UI being served from the previous cache.
+- Review fixes: completion now follows the visible finish line at every speed, and snow caps are placed on tree crowns. Service-worker activation also removes superseded caches.
+- Moved the finish checker and finish line into one group so the visible line, completion timing, and level speed stay synchronized.

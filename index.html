@@ -13,25 +13,27 @@
       <section id="menu-screen" class="screen panel">
         <p class="eyebrow">REACTION RUNNER</p>
         <h1>Running Girl</h1>
-        <p>Reach the finish, collect strawberries, and keep your three hearts.</p>
-        <button id="start-button" class="primary-button">Start level</button>
+        <p>Choose a route, collect treats, and keep your three hearts.</p>
+        <div id="level-map" class="level-map" aria-label="Choose a level"></div>
+        <button id="start-button" class="primary-button">Start selected level</button>
         <p class="hint">Portrait mode · WASD or the on-screen pad</p>
       </section>
       <section id="result-screen" class="screen panel hidden">
         <p id="result-eyebrow" class="eyebrow">LEVEL COMPLETE</p>
         <h2 id="result-title">You made it!</h2>
         <p id="result-copy"></p>
+        <button id="next-button" class="primary-button hidden">Next level</button>
         <button id="result-button" class="primary-button">Back to menu</button>
       </section>
       <div id="hud" class="hud hidden">
         <div class="hud-card"><span id="hearts">♥ ♥ ♥</span></div>
-        <div class="hud-card score" aria-label="Strawberries collected">
+        <div class="hud-card score" aria-label="Collectibles collected">
           <svg class="strawberry-icon" viewBox="0 0 24 24" aria-hidden="true">
             <path class="strawberry-leaves" d="M12 7.1C10.2 4.5 7.6 3.8 6 4.5c1.1 1.1 2.2 1.7 3.5 1.9C7.1 6.1 5.2 7 4.3 8.3c1.5.4 2.8.3 4-.2C6.5 10.4 6.2 13.4 7.1 16c.9 2.5 2.7 4.7 4.9 5.7 2.2-1 4-3.2 4.9-5.7.9-2.6.6-5.6-1.2-7.9 1.2.5 2.5.6 4 .2-.9-1.3-2.8-2.2-5.2-1.9 1.3-.2 2.4-.8 3.5-1.9-1.6-.7-4.2 0-6 2.6Z" />
             <path class="strawberry-fruit" d="M12 7.1c-3.8 0-6.4 1.9-6.4 5.2 0 4.3 3.4 9.1 6.4 9.1s6.4-4.8 6.4-9.1c0-3.3-2.6-5.2-6.4-5.2Z" />
             <circle cx="9.2" cy="11.8" r=".65" /><circle cx="13" cy="10.5" r=".65" /><circle cx="15.4" cy="13.2" r=".65" /><circle cx="10.5" cy="15.2" r=".65" /><circle cx="13.6" cy="17" r=".65" />
           </svg>
-          <strong id="score">0</strong>
+          <span id="collectible-label">Treats</span> <strong id="score">0</strong>
         </div>
         <div class="hud-card timer"><strong id="timer">30</strong>s</div>
         <button id="pause-button" class="icon-button" aria-label="Pause">Ⅱ</button>
