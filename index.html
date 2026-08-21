@@ -15,6 +15,14 @@
         <button id="press-start-button" class="press-start">PRESS START</button>
         <p class="hint">Tap, Enter, or Space</p>
       </section>
+      <section id="player-mode-screen" class="screen panel hidden">
+        <p class="eyebrow">CHOOSE YOUR GAME</p>
+        <h1>Play Mode</h1>
+        <div class="mode-options">
+          <button id="solo-button" class="mode-button"><strong>Solo Player</strong><span>Run at your own pace</span></button>
+          <button id="ai-button" class="mode-button"><strong>VS AI</strong><span>Race a friendly runner</span></button>
+        </div>
+      </section>
       <section id="character-screen" class="screen panel hidden">
         <p class="eyebrow">CHOOSE YOUR RUNNER</p>
         <h1>Character Select</h1>
@@ -36,6 +44,10 @@
       </section>
       <div id="hud" class="hud hidden">
         <div class="hud-card"><span id="hearts">♥ ♥ ♥</span></div>
+        <div class="hud-card race-card" aria-label="Race progress">
+          <div class="race-label"><span>YOU</span><span id="race-gap">AI is nearby</span><span>AI</span></div>
+          <div class="race-track"><i id="player-progress"></i><b id="ai-progress"></b></div>
+        </div>
         <div class="hud-card score" aria-label="Collectibles collected">
           <svg class="strawberry-icon" viewBox="0 0 24 24" aria-hidden="true">
             <path class="strawberry-leaves" d="M12 7.1C10.2 4.5 7.6 3.8 6 4.5c1.1 1.1 2.2 1.7 3.5 1.9C7.1 6.1 5.2 7 4.3 8.3c1.5.4 2.8.3 4-.2C6.5 10.4 6.2 13.4 7.1 16c.9 2.5 2.7 4.7 4.9 5.7 2.2-1 4-3.2 4.9-5.7.9-2.6.6-5.6-1.2-7.9 1.2.5 2.5.6 4 .2-.9-1.3-2.8-2.2-5.2-1.9 1.3-.2 2.4-.8 3.5-1.9-1.6-.7-4.2 0-6 2.6Z" />
