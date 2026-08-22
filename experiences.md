@@ -87,3 +87,35 @@
 - Added stronger colored donut glazing and sprinkles for chocolate and strawberry variants while keeping all donuts worth one point.
 - Replaced the low beach flock presentation with a light-blue airplane silhouette while preserving the established slide collision profile and timing.
 - Registered the boats as looping beach decor so they continue moving through the visible water margins instead of remaining too distant or disappearing after one pass.
+
+## 2026-08-22 — Level 6 moving ships
+
+- Replaced the three recycled beach craft with six deterministic decorative ships, three on each water side, positioned at `x = ±15.5` after Playwright camera review.
+- Rotated every ship to face the finish direction (`-Z`) and gave each side a staggered departure schedule at 0, 7, and 14 seconds with speeds above the Level 6 auto-run speed.
+- Ships now stop at the finish line rather than looping, and their positions are derived from elapsed time so rewind restores the same motion state.
+
+## 2026-08-22 — Level 6 ship visibility and separation
+
+- Removed the Level 6 beach trees so the watercraft remain readable from the gameplay camera across the route.
+- Changed all six ships to depart together at the start, with independent deterministic speed sets on the left and right so three ships separate and sail concurrently on each side.
+
+## 2026-08-22 — Level 6 ship convoy visibility correction
+
+- Playwright showed that same-line departures made ships merge within seconds and then disappear into the camera fog.
+- Converted the ships to a deterministic three-wave convoy per side: departures at 0, 10, and 20 seconds, starting from a camera-visible approach position, with speeds just above the Level 6 runner speed.
+- Extended only the beach fog range so the later convoy members remain readable, while keeping ship positions derived from elapsed time for rewind consistency.
+
+## 2026-08-22 — Level 6 convoy desynchronization and scale pass
+
+- Playwright confirmed that shared departure times and nearly identical speeds made left/right ships appear as synchronized pairs.
+- Increased the current ship sizes by another 20% and assigned independent left/right departure schedules and wider speed differences while keeping every speed above the runner speed.
+
+## 2026-08-22 — Level 6 rainbow horizon
+
+- Added a procedural seven-band rainbow with rounded white cloud banks beside the sun, tuned from the supplied reference image.
+- Widened and lowered the rainbow so it occupies most of the visible horizon while remaining behind the course and ships.
+- Increased all current ship scales by an additional 25% without changing their convoy timing or movement behavior.
+
+## 2026-08-22 — Rainbow horizon depth adjustment
+
+- Moved the rainbow farther back from `z = -92` to `z = -135`, placing it closer to the true horizon so moving ships remain visually separated from the rainbow and course polygons before fading from view.
