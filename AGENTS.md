@@ -643,3 +643,30 @@ The car and bus models require a complete visual redesign before being considere
 They must be immediately recognizable as a car and a bus from the actual gameplay camera and at normal gameplay scale, including clear silhouettes and defining features that a child can read while moving.
 
 Their gameplay behavior must remain consistent with the existing block/change-lane behavior unless explicitly approved otherwise.
+
+## Player geometry and collision reference
+
+Use the current playable girl as the dimensional reference when staging procedural assets. These values describe the default character at scale `1` and must remain aligned with `makeGirl()` and the collision code in `src/main.js`:
+
+* visual height, including hair: approximately `3.9` world units
+* visual width at the widest running pose: approximately `1.34` world units
+* gameplay collision half-width: `0.525` world units, for a `1.05` world-unit collision width
+* slide visual height: approximately `2.42` world units while the player scale is `0.62`
+* jump clearance reference: `0.292` world units above the ground collision reference
+
+Asset review must compare obstacle proportions and clearance against these player references from the gameplay camera. Visual dimensions may be larger than logical collision dimensions, but the visible result must agree with the action contract. Do not change the established player dimensions, jump/slide timing, or lane behavior to compensate for an obstacle asset; adjust the asset staging or its explicitly documented collision profile instead.
+
+## Resize and collision verification
+
+Whenever an asset is resized, uniformly scaled, stretched, or materially reshaped, immediately verify its gameplay collision box against the resulting visual dimensions and the player reference above. Do not assume an existing collision profile remains appropriate after a visual size change.
+
+The verification must confirm:
+
+* the collision box covers the intended gameplay footprint;
+* the player cannot visually merge into the asset before collision is detected;
+* the front and rear collision boundaries match the asset’s movement direction;
+* adjacent lanes remain safe when the obstacle is a block/change-lane asset;
+* jump and slide clearance still matches the visual geometry; and
+* collision timing remains consistent with the obstacle’s action class.
+
+If visual and collision dimensions intentionally differ, document the reason in the centralized collision configuration and validate the result from the gameplay camera.
