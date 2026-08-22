@@ -119,3 +119,9 @@
 ## 2026-08-22 — Rainbow horizon depth adjustment
 
 - Moved the rainbow farther back from `z = -92` to `z = -135`, placing it closer to the true horizon so moving ships remain visually separated from the rainbow and course polygons before fading from view.
+
+## 2026-08-22 — Level 6 airplane obstacle redesign
+
+- Replaced the old Level 6 seagull placeholder with a dedicated airplane obstacle matching the supplied blue-and-white references: rounded fuselage, broad wings, tailplane, vertical stabilizer, engines and cockpit windows.
+- Sized the visible wingspan to 2.3 world units, just inside the 2.5-unit lane width, while keeping the logical airplane collision profile on the established slide timing and safely separated from adjacent lanes.
+- Raised the lowest visible airplane parts above the player’s 2.42-unit slide-height reference so a correctly timed slide remains visually and mechanically consistent.
