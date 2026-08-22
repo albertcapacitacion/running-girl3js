@@ -3,4 +3,8 @@ dist/
 .next/
 .wrangler/
 releases/
+.vinext/
+.worktrees/
+.codex-remote-attachments/
+*.tar.gz
 .DS_Store
