@@ -10,7 +10,8 @@
     "dev": "vinext dev",
     "build": "vinext build",
     "start": "vinext start",
-    "preview": "vinext dev"
+    "preview": "vinext dev",
+    "test:gameplay": "playwright test"
   },
   "dependencies": {
     "react": "19.2.6",
@@ -20,6 +21,7 @@
   "devDependencies": {
     "@cloudflare/vite-plugin": "1.37.1",
     "@openai/sites-vite-plugin": "0.1.0",
+    "@playwright/test": "^1.62.1",
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",

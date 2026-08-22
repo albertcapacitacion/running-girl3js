@@ -6,5 +6,7 @@ releases/
 .vinext/
 .worktrees/
 .codex-remote-attachments/
+test-results/
+playwright-report/
 *.tar.gz
 .DS_Store
