@@ -530,6 +530,8 @@ Use:
 
 ## 19. Self-review every new asset
 
+Whenever a new asset is added or an existing asset is materially reworked, it must be visually QA-tested from the actual gameplay camera at close approach distance. Rotate or stage the asset when necessary so its silhouette and defining features are immediately distinguishable to a 4–6-year-old child while the game is moving. Do not approve an asset based only on an editor view, distant view, or technically correct component geometry.
+
 Before considering an asset finished, explicitly review:
 
 ### Visual recognition
@@ -670,3 +672,7 @@ The verification must confirm:
 * collision timing remains consistent with the obstacle’s action class.
 
 If visual and collision dimensions intentionally differ, document the reason in the centralized collision configuration and validate the result from the gameplay camera.
+
+## Rewind scene synchronization
+
+Rewind must restore the complete gameplay scene to the target elapsed time, not only the player. Every rewindable element must be derived from the same elapsed-time state, including obstacles, collectibles, finish markers, moving environmental decor, weather or effects that affect gameplay readability, and all level geometry. When adding or changing animated or moving scene elements, update the centralized rewind synchronization path and verify that the element remains spatially and visually consistent throughout the rewind animation.

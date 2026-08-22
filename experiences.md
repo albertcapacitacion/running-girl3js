@@ -71,3 +71,19 @@
 
 - The first thumbnail pass varied mostly by palette, which made the five routes look too similar at a glance.
 - Added distinct lightweight visual cues tied to each environment: trees and sun, moon and stars, snow and snowman, rain and buildings, and festival poles with bunting.
+
+## 2026-08-22 — Levels 6–8 course scaling and special hazards
+
+- Kept the first five levels on their existing 30-second and 235-unit completion behavior while giving the new levels explicit 35-second durations and finish distances derived from their configured speed multipliers.
+- Added reusable procedural obstacle and collectible families for the beach, Tokyo, and concert themes, with centralized action-class collision profiles and special bridge/spotlight handling.
+- The Tokyo bridge uses one opening lane that requires the existing slide action; the concert spotlight moves predictably between lanes and uses its active lane for collision rather than relying on the visible mesh bounds.
+- Japanese storefront signs use a small local canvas texture with contextual labels such as 本, 花, 服, カフェ, and 東京, avoiding external assets and runtime services.
+
+## 2026-08-22 — Beach Boardwalk readability pass
+
+- Enlarged and restaged the beach slide hazard so the seagulls read as an obvious overhead flock from the gameplay camera.
+- Reworked the beach lounger silhouette with a raised back, pillow, and visible legs, and raised the umbrella to maintain a clearer relationship with the player.
+- Added visible water-wave highlights plus procedurally built boats and a small ship inside the camera-readable water margins.
+- Added stronger colored donut glazing and sprinkles for chocolate and strawberry variants while keeping all donuts worth one point.
+- Replaced the low beach flock presentation with a light-blue airplane silhouette while preserving the established slide collision profile and timing.
+- Registered the boats as looping beach decor so they continue moving through the visible water margins instead of remaining too distant or disappearing after one pass.
