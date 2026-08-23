@@ -3,6 +3,30 @@ import { advanceToDistance, callApi, collisionEvents, expectHealthy, openGame, s
 
 test.afterEach(async ({ page }) => expectHealthy(page));
 
+test('Level 8 stays preserved internally but is unavailable in normal progression', async ({ page }) => {
+  await openGame(page);
+  await page.locator('#press-start-button').click();
+  await page.locator('#solo-button').click();
+  await page.locator('#character-next-button').click();
+
+  await expect(page.locator('#level-map .level-node')).toHaveCount(7);
+  await expect(page.locator('#level-map')).not.toContainText('K-pop Concert');
+
+  const levels = await page.evaluate(() => window.__runningGirlTest.levels);
+  expect(levels).toHaveLength(8);
+  expect(levels[7].name).toBe('K-pop Concert');
+});
+
+test('Level 7 completion offers only the level-select action', async ({ page }) => {
+  await openGame(page);
+  await startLevel(page, 6);
+  const level = await page.evaluate(() => window.__runningGirlTest.levels[6]);
+  await advanceToDistance(page, level.finishDistance + 2);
+
+  await expect(page.locator('#next-button')).toBeHidden();
+  await expect(page.locator('#result-button')).toHaveText('Back to level select');
+});
+
 function laneIndex(specLane) {
   return specLane + 1;
 }
