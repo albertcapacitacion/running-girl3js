@@ -48,3 +48,19 @@ test('scripted playthrough reaches the finish on every level', async ({ page }) 
     expect(finalSnapshot.lives, levels[levelIndex].name).toBeGreaterThan(0);
   }
 });
+
+test('scripted playthrough reaches the finish on Levels 2 through 7', async ({ page }) => {
+  test.setTimeout(300_000);
+  await openGame(page);
+  const levels = await page.evaluate(() => window.__runningGirlTest.levels);
+
+  for (let levelIndex = 1; levelIndex <= 6; levelIndex += 1) {
+    await startLevel(page, levelIndex);
+    for (const [obstacleIndex, obstacle] of levels[levelIndex].obstacles.entries()) {
+      await playObstacle(page, obstacle, obstacleIndex);
+    }
+    const finalSnapshot = await advanceToDistance(page, levels[levelIndex].finishDistance + 2);
+    expect(finalSnapshot.mode, levels[levelIndex].name).toBe('success');
+    expect(finalSnapshot.lives, levels[levelIndex].name).toBeGreaterThan(0);
+  }
+});

@@ -125,3 +125,12 @@
 - Replaced the old Level 6 seagull placeholder with a dedicated airplane obstacle matching the supplied blue-and-white references: rounded fuselage, broad wings, tailplane, vertical stabilizer, engines and cockpit windows.
 - Sized the visible wingspan to 2.3 world units, just inside the 2.5-unit lane width, while keeping the logical airplane collision profile on the established slide timing and safely separated from adjacent lanes.
 - Raised the lowest visible airplane parts above the player’s 2.42-unit slide-height reference so a correctly timed slide remains visually and mechanically consistent.
+
+## 2026-08-22 — Level 6 airplane orientation correction
+
+- Rotated the airplane 180 degrees around its vertical axis so the nose and cockpit face the approaching player instead of pointing toward the horizon.
+
+## 2026-08-23 — Independent competitive AI simulation
+
+- Replaced the single perfect-opponent behavior with lightweight AI profiles that vary speed, reaction distance, lane choices, obstacle mistakes, and recovery time while keeping the existing transparent runner presentation.
+- Kept AI progress, collisions, and recovery separate from the player collision pause and rewind state; Playwright coverage verifies the AI remains beside the player at the start and continues progressing while the player rewinds.
