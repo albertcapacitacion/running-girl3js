@@ -36,6 +36,9 @@
   "overrides": {
     "satori@0.33.5": {
       "fflate": "0.7.5"
+    },
+    "miniflare@5.20261012.0-beta": {
+      "undici": "7.30.1"
     }
   }
 }
